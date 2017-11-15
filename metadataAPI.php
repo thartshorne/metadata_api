@@ -114,7 +114,11 @@ class metadataFile
 		$searchResult = array();
 		foreach ($searchBody as $variable)
 		{
-			if (strpos($variable[$fieldName], $query) != false)
+			if ($query == null)
+			{
+				$searchResult[$variable["new_name"]] = $variable;
+			}
+			elseif (strpos($variable[$fieldName], $query) !== false)
 			{
 				$searchResult[$variable["new_name"]] = $variable;
 			}
@@ -145,49 +149,49 @@ class metadataFile
 $metadataFile = new metadataFile($filename);
 // var_dump($argv);
 // print_r("one1111");
-if (isset($_GET['function']))
-{
-	$fname = $_GET['function'];
-	if ($fname == "getVariable")
-	{
-		$varName = $_GET['params'];
-		fwrite(STDOUT, $metadataFile->getVariable($varName));
-	}
-	elseif($fname == "selectMetadata")
-	{
-		$params = explode(',', $_GET['params']);
-		fwrite(STDOUT, $metadataFile->selectMetadata($params[0], $params[1]));
-	}
+// if (isset($_GET['function']))
+// {
+// 	$fname = $_GET['function'];
+// 	if ($fname == "getVariable")
+// 	{
+// 		$varName = $_GET['params'];
+// 		fwrite(STDOUT, $metadataFile->getVariable($varName));
+// 	}
+// 	elseif($fname == "selectMetadata")
+// 	{
+// 		$params = explode(',', $_GET['params']);
+// 		fwrite(STDOUT, $metadataFile->selectMetadata($params[0], $params[1]));
+// 	}
 
-	//unfinished: figure out json format issue. get size of get array, parse params into array
-	//to become json
-	elseif($fname == "filterMetadata")
-	{
-		$params = explode(',', $_GET['params']);
-		$size = count($params);
-		$arrayToJson = array();
-		foreach ($i = 0; $i < $size; $i++) 
-		{
-			//will create an issue when there is a colon in the field
-			$pairs = explode(":", $params[$i]);
-			$arrayToJson[$pairs[0]] = $pairs[1];
-		}
-		fwrite(STDOUT, $metadataFile->filterMetadata(json_encode($arrayToJson)));
-	}
-	elseif($fname == "searchMetadata")
-	{
-		$params = explode(',', $_GET['params']);
-		if ($params[2] != null)
-		{
-			fwrite(STDOUT, $metadataFile->searchMetadata($params[0], $params[1], $params[2]));
-		}
-		else 
-		{
-			fwrite(STDOUT, $metadataFile->searchMetadata($params[0], $params[1]));
-		}
-	}
-	else fwrite(STDOUT, null);
-}
+// 	//unfinished: figure out json format issue. get size of get array, parse params into array
+// 	//to become json
+// 	elseif($fname == "filterMetadata")
+// 	{
+// 		$params = explode(',', $_GET['params']);
+// 		$size = count($params);
+// 		$arrayToJson = array();
+// 		foreach ($i = 0; $i < $size; $i++) 
+// 		{
+// 			//will create an issue when there is a colon in the field
+// 			$pairs = explode(":", $params[$i]);
+// 			$arrayToJson[$pairs[0]] = $pairs[1];
+// 		}
+// 		fwrite(STDOUT, $metadataFile->filterMetadata(json_encode($arrayToJson)));
+// 	}
+// 	elseif($fname == "searchMetadata")
+// 	{
+// 		$params = explode(',', $_GET['params']);
+// 		if ($params[2] != null)
+// 		{
+// 			fwrite(STDOUT, $metadataFile->searchMetadata($params[0], $params[1], $params[2]));
+// 		}
+// 		else 
+// 		{
+// 			fwrite(STDOUT, $metadataFile->searchMetadata($params[0], $params[1]));
+// 		}
+// 	}
+// 	else fwrite(STDOUT, null);
+// }
 
 // if ($argv[1] == "getVariable")
 // {
@@ -227,15 +231,22 @@ if (isset($_GET['function']))
 // global $metadataArray;
 // $metadataFile = new metadataFile($filename);
 // $metadataFile->getMetadata();
-// print_r($metadataFile->getVariable(cf1ethrace));
+
+global $metadataArray;
+print_r($metadataFile->getVariable(cf1ethrace));
+print_r($metadataFile->selectMetadata(cf2id, "old_name"));
+$testFilters = array("group" => "1966", "varlab" => "Father race (all waves combined report)");
+$jsonFilter =  json_encode($testFilters);
+print_r($metadataFile->filterMetadata($jsonFilter));
+print_r($metadataFile->searchMetadata("cognitive skills", "topic1", $metadataArray));
+
+
 // print_r($metadataFile->selectMetadata(cf1ethrace, "type"));
 // print_r("\n");
 // print_r($metadataFile->selectMetadata(cf2id, "old_name"));
 // // print_r("\n");
 
-// $testFilters = array("group" => "1966", "varlab" => "Father race (all waves combined report)");
-// $jsonFilter =  json_encode($testFilters);
-// print_r($metadataFile->filterMetadata($jsonFilter));
+
 
 // $filtered = $metadataFile->filterMetadata($jsonFilter)
 // echo count(filtered[]);
