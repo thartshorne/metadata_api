@@ -9,8 +9,7 @@ $categories = array(new_name, varlab, old_name, type, warning, group, q_group_N,
 class metadataFile
 {
 	private $metadataArray;
-	// private $filename;
-	function __construct($filename)
+	function __construct()
 	{
 		global $filename, $categories, $metadataArray;
 		try 
@@ -20,7 +19,7 @@ class metadataFile
 				unset($metadata[0]);
 				$vars = array();
 				$lenMetadata = sizeof($metadata);
-				for ($i = 1; $i < $lenMetadata; $i++)
+				for ($i = 1; $i <= $lenMetadata; $i++)
 				{
 					$varArrInt = explode(',', $metadata[$i]);
 					$lenVA = sizeof($varArrInt);
@@ -38,7 +37,6 @@ class metadataFile
 					by column name (category)*/
 					$metadataArray[$varArrCat[new_name]] = $varArrCat;
 				}
-				// print_r($metadataArray[m4i23m]);
 			}
 		else
 			{
@@ -51,57 +49,76 @@ class metadataFile
 		}
 	}
 
-	//returns parsed double array of full metadata
-	// public function getMetadata()
-	// {
-	// 	global $metadataArray;
-	// 	// var_dump($metadataArray);
-	// 	return json_encode($metadataArray, JSON_FORCE_OBJECT);
-	// }
-
-	public function getVariable($varName)
-	{
-		global $metadataArray;
-		$variable = $metadataArray[$varName];
-		return json_encode($variable);
-	}
-
 	public function selectMetadata($varName, $fieldName)
 	{
 		global $metadataArray;
+		if ($fieldName == null)
+		{
+			$fullVar = $metadataArray[$varName];
+			if ($fullVar == null)
+			{
+				return "[]";
+			}
+			return json_encode($fullVar);
+		}
 		$varField = $metadataArray[$varName][$fieldName];
-		return json_encode($varField);
+		if ($varField != null)
+		{
+			return json_encode($varField);
+		}
+		else return "[]";
 	}
 
-	public function filterMetadata($filter_json)
+	public function filterMetadata($filtersArr)
 	{
 		global $metadataArray;
-		$filtersArr = json_decode($filter_json, true);
 		$filteredList = array();
-		$firstFilterCounter = 0;
 
-
-		foreach ($filtersArr as $filter => $value) {
-			foreach ($metadataArray as $variable) {
-				if ($variable[$filter] == $value)
-				{
-					$filteredList[$variable["new_name"]] = $variable;
-					// array_push($filteredList, $variable);
-				}
+		if ($filtersArr == null)
+		{
+			foreach ($metadataArray as $variable) 
+			{
+				$filteredList[$variable["new_name"]] = $variable;
+				print_r(json_encode($variable));
 			}
-			unset($filtersArr[$filter]);
-			break;
 		}
-		foreach ($filtersArr as $filter => $value) {
-			foreach ($filteredList as $variable) {
-				if ($variable[$filter] != $value) 
+		else
+		{
+			$filtersArr = json_decode($filtersArr, true);
+			foreach ($filtersArr as $filter => $value) 
+			{
+				foreach ($metadataArray as $variable) 
+				{
+					if ($variable[$filter] == $value)
+					{
+						$filteredList[$variable["new_name"]] = $variable;
+					}
+				}
+				unset($filtersArr[$filter]);
+				break;
+			}
+			foreach ($filtersArr as $filter => $value) 
+			{
+				foreach ($filteredList as $variable) 
+				{
+					if ($variable[$filter] != $value) 
 					{
 						unset($filteredList[$variable["new_name"]]);
 					}
+				}
 			}
 		}
-		// var_dump($filteredList);
-		return json_encode($filteredList);
+		foreach ($filteredList as $variable) {
+			print_r(json_encode($variable));
+		}
+		if (empty($filteredList))
+		{
+			return "[]";
+		}
+		else
+		{
+			return;
+		}
 	}
 
 	public function searchMetadata($query, $fieldName, $searchBody = null)
@@ -111,151 +128,63 @@ class metadataFile
 		{
 			$searchBody = $metadataArray;
 		}
+		else
+		{
+			print_r($searchBody);
+			$newSearch = array();
+			$searchFile = file_get_contents($searchBody);
+			if ($searchFile == false)
+			{
+				return 0;
+			}
+			$linesFile = str_replace("}", "}\n", $searchFile);
+			foreach(preg_split("/((\r?\n)|(\r\n?))/", $linesFile) as $line)
+			{
+				$element = json_decode($line, true);
+				$newSearch[$element["new_name"]] = $element;
+			}
+			$searchBody = $newSearch;
+		}
 		$searchResult = array();
 		foreach ($searchBody as $variable)
 		{
 			if ($query == null)
 			{
-				$searchResult[$variable["new_name"]] = $variable;
+				$allResults = $searchResult[$variable["new_name"]] = $variable;
+				print_r(json_encode($variable));
 			}
 			elseif (strpos($variable[$fieldName], $query) !== false)
 			{
 				$searchResult[$variable["new_name"]] = $variable;
+				print_r(json_encode($variable));
 			}
 		}
-		return json_encode($searchResult);
+		if (empty($searchResult))
+		{
+			return "[]";
+		}
+		else 
+		{
+			return;
+		}
 	}
 
-	// public function getOldName($newName)
-	// {
-	// 	global $metadataArray;
-	// 	// $oldNme = $metadataArray[$newName][old_name];
-	// 	// $jsonArr = json_encode($oldName);
-	// 	// echo $jsonArr;
-	// 	return $metadataArray[$newName][old_name];
-	// }
-
-	// public function getNewName($oldName)
-	// {
-	// 	global $metadataArray;
-	// 	foreach ($metadataArray as $arr)
-	// 	{
-	// 		if ($arr[old_name] == $oldName) return $arr[new_name];
-	// 	}
-	// 	return -1;
-	// }
 }
 
-$metadataFile = new metadataFile($filename);
-// var_dump($argv);
-// print_r("one1111");
-// if (isset($_GET['function']))
-// {
-// 	$fname = $_GET['function'];
-// 	if ($fname == "getVariable")
-// 	{
-// 		$varName = $_GET['params'];
-// 		fwrite(STDOUT, $metadataFile->getVariable($varName));
-// 	}
-// 	elseif($fname == "selectMetadata")
-// 	{
-// 		$params = explode(',', $_GET['params']);
-// 		fwrite(STDOUT, $metadataFile->selectMetadata($params[0], $params[1]));
-// 	}
-
-// 	//unfinished: figure out json format issue. get size of get array, parse params into array
-// 	//to become json
-// 	elseif($fname == "filterMetadata")
-// 	{
-// 		$params = explode(',', $_GET['params']);
-// 		$size = count($params);
-// 		$arrayToJson = array();
-// 		foreach ($i = 0; $i < $size; $i++) 
-// 		{
-// 			//will create an issue when there is a colon in the field
-// 			$pairs = explode(":", $params[$i]);
-// 			$arrayToJson[$pairs[0]] = $pairs[1];
-// 		}
-// 		fwrite(STDOUT, $metadataFile->filterMetadata(json_encode($arrayToJson)));
-// 	}
-// 	elseif($fname == "searchMetadata")
-// 	{
-// 		$params = explode(',', $_GET['params']);
-// 		if ($params[2] != null)
-// 		{
-// 			fwrite(STDOUT, $metadataFile->searchMetadata($params[0], $params[1], $params[2]));
-// 		}
-// 		else 
-// 		{
-// 			fwrite(STDOUT, $metadataFile->searchMetadata($params[0], $params[1]));
-// 		}
-// 	}
-// 	else fwrite(STDOUT, null);
-// }
-
-// if ($argv[1] == "getVariable")
-// {
-// 	if($argv[2] != null)
-// 	{
-// 		print_r("x");
-// 		fwrite(STDOUT, $metadataFile->getVariable($argv[2]));
-// 	}
-// 	else
-// 	{
-// 		fwrite(STDOUT, null);
-// 	}
-// }
-
-// private function testGetMetadata()
-// {
-
-// }
-// private function testGetVariable()
-// {
-
-// }
-// private function testSelectMetadata()
-// {
-
-// }
-// private function testFilterMetadata()
-// {
-
-// }
-// private function testSearchMetadata()
-// {
-
-// }
-
-
-// global $metadataArray;
 // $metadataFile = new metadataFile($filename);
-// $metadataFile->getMetadata();
+// global $metadataArray;
 
-global $metadataArray;
-print_r($metadataFile->getVariable(cf1ethrace));
-print_r($metadataFile->selectMetadata(cf2id, "old_name"));
-$testFilters = array("group" => "1966", "varlab" => "Father race (all waves combined report)");
-$jsonFilter =  json_encode($testFilters);
-print_r($metadataFile->filterMetadata($jsonFilter));
-print_r($metadataFile->searchMetadata("cognitive skills", "topic1", $metadataArray));
-
-
-// print_r($metadataFile->selectMetadata(cf1ethrace, "type"));
-// print_r("\n");
 // print_r($metadataFile->selectMetadata(cf2id, "old_name"));
-// // print_r("\n");
+// print_r("\n\n");
 
+// $testFilters = array("group" => "1966", "varlab" => "Father race (all waves combined report)");
+// $jsonFilter =  json_encode($testFilters);
+// print_r($metadataFile->filterMetadata($jsonFilter));
+// print_r("\n\n");
 
-
-// $filtered = $metadataFile->filterMetadata($jsonFilter)
-// echo count(filtered[]);
-// $metadataFile->getOldName(f4e12);
-// $metadataFile->getVariable(f4e12);
+// print_r($metadataFile->searchMetadata("policing", "topic1"));
 
 /* returns private error 
 print_r($metadataFile->metadataArray);*/
-
-// function 
 
 ?>

@@ -8,7 +8,6 @@ $categories = array(new_name, varlab, old_name, type, warning, group, q_group_N,
 class metadataFile
 {
 	private $metadataArray;
-	// private $filename;
 	function __construct($filename)
 	{
 		global $filename, $categories, $metadataArray;
@@ -19,7 +18,7 @@ class metadataFile
 				unset($metadata[0]);
 				$vars = array();
 				$lenMetadata = sizeof($metadata);
-				for ($i = 1; $i < $lenMetadata; $i++)
+				for ($i = 1; $i <= $lenMetadata; $i++)
 				{
 					$varArrInt = explode(',', $metadata[$i]);
 					$lenVA = sizeof($varArrInt);
@@ -56,31 +55,63 @@ class metadataFile
 		{
 			$searchBody = $metadataArray;
 		}
+		else
+		{
+			print_r($searchBody);
+			$newSearch = array();
+			$searchFile = file_get_contents($searchBody);
+			if ($searchFile == false)
+			{
+				return 0;
+			}
+			$linesFile = str_replace("}", "}\n", $searchFile);
+			foreach(preg_split("/((\r?\n)|(\r\n?))/", $linesFile) as $line)
+			{
+				$element = json_decode($line, true);
+				$newSearch[$element["new_name"]] = $element;
+			}
+			$searchBody = $newSearch;
+		}
 		$searchResult = array();
 		foreach ($searchBody as $variable)
 		{
 			if ($query == null)
 			{
-				$searchResult[$variable["new_name"]] = $variable;
+				$allResults = $searchResult[$variable["new_name"]] = $variable;
+				print_r(json_encode($variable));
 			}
 			elseif (strpos($variable[$fieldName], $query) !== false)
 			{
 				$searchResult[$variable["new_name"]] = $variable;
+				print_r(json_encode($variable));
 			}
 		}
-		return json_encode($searchResult, JSON_PRETTY_PRINT);
+		if (empty($searchResult))
+		{
+			return "[]";
+		}
+		else 
+		{
+			return;
+		}
 	}
 }
 
 $metadataFile = new metadataFile($filename);
-
-$query = urldecode($_GET['query']);
-
-if (!isset($_GET['search_body']))
+if (empty($_GET))
 {
-	$searchBody = null;
+	print_r($metadataFile->searchMetadata($argv[1], $argv[2], $argv[3]));
 }
+else
+{
+	$query = urldecode($_GET['query']);
 
-print_r($metadataFile->searchMetadata($query, urldecode($_GET['field_name']), $searchBody));
+	if (!isset($_GET['search_body']))
+	{
+		$searchBody = null;
+	}
+
+	print_r($metadataFile->searchMetadata($query, urldecode($_GET['field_name']), $searchBody));
+}
 
 ?>

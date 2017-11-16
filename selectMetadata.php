@@ -8,7 +8,6 @@ $categories = array(new_name, varlab, old_name, type, warning, group, q_group_N,
 class metadataFile
 {
 	private $metadataArray;
-	// private $filename;
 	function __construct($filename)
 	{
 		global $filename, $categories, $metadataArray;
@@ -19,7 +18,7 @@ class metadataFile
 				unset($metadata[0]);
 				$vars = array();
 				$lenMetadata = sizeof($metadata);
-				for ($i = 1; $i < $lenMetadata; $i++)
+				for ($i = 1; $i <= $lenMetadata; $i++)
 				{
 					$varArrInt = explode(',', $metadata[$i]);
 					$lenVA = sizeof($varArrInt);
@@ -52,11 +51,38 @@ class metadataFile
 	public function selectMetadata($varName, $fieldName)
 	{
 		global $metadataArray;
+		if ($fieldName == null)
+		{
+			$fullVar = $metadataArray[$varName];
+			if ($fullVar == null)
+			{
+				return "[]";
+			}
+			return json_encode($fullVar);
+		}
 		$varField = $metadataArray[$varName][$fieldName];
-		return json_encode($varField, JSON_PRETTY_PRINT);
+		if ($varField != null)
+		{
+			return json_encode($varField);
+		}
+		else return "[]";
 	}
 }
 
 $metadataFile = new metadataFile($filename);
-print_r($metadataFile->selectMetadata(urldecode($_GET['new_name']), urldecode($_GET['field_name'])));
+if (empty($_GET))
+{
+	print_r($metadataFile->selectMetadata($argv[1], $argv[2]));
+}
+else 
+{
+	if (!isset($_GET['new_name']))
+	{
+		print_r("null");
+	}
+	else
+	{
+		print_r($metadataFile->selectMetadata(urldecode($_GET['new_name']), urldecode($_GET['field_name'])));
+	}
+}
 ?>

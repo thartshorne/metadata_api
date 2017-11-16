@@ -8,7 +8,6 @@ $categories = array(new_name, varlab, old_name, type, warning, group, q_group_N,
 class metadataFile
 {
 	private $metadataArray;
-	// private $filename;
 	function __construct($filename)
 	{
 		global $filename, $categories, $metadataArray;
@@ -19,7 +18,7 @@ class metadataFile
 				unset($metadata[0]);
 				$vars = array();
 				$lenMetadata = sizeof($metadata);
-				for ($i = 1; $i < $lenMetadata; $i++)
+				for ($i = 1; $i <= $lenMetadata; $i++)
 				{
 					$varArrInt = explode(',', $metadata[$i]);
 					$lenVA = sizeof($varArrInt);
@@ -52,9 +51,7 @@ class metadataFile
 	public function filterMetadata($filtersArr)
 	{
 		global $metadataArray;
-		// $filtersArr = json_decode($filter_json, true);
 		$filteredList = array();
-		$firstFilterCounter = 0;
 
 		if ($filtersArr == null)
 		{
@@ -73,7 +70,6 @@ class metadataFile
 					if ($variable[$filter] == $value)
 					{
 						$filteredList[$variable["new_name"]] = $variable;
-						// array_push($filteredList, $variable);
 					}
 				}
 				unset($filtersArr[$filter]);
@@ -90,26 +86,43 @@ class metadataFile
 				}
 			}
 		}
-		// var_dump($filteredList);
-		// print_r($filteredList);
-		return json_encode($filteredList, JSON_PRETTY_PRINT);
+		foreach ($filteredList as $variable) {
+			print_r(json_encode($variable));
+		}
+		if (empty($filteredList))
+		{
+			return "[]";
+		}
+		else
+		{
+			return;
+		}
 	}
 }
 
 $metadataFile = new metadataFile($filename);
-
-$filters = array();
-foreach ($categories as $field) 
+if (empty($_GET))
 {
-	if (isset($_GET[$field]))
+	print_r($metadataFile->filterMetadata(json_decode($argv[1], true)));
+}
+else
+{
+	$filters = array();
+	foreach ($categories as $field) 
 	{
-		$filters[$field] = urldecode($_GET[$field]);
+		if (isset($_GET[$field]))
+		{
+			$filters[$field] = urldecode($_GET[$field]);
+		}
+	}
+	if (count($filters) == 0)
+	{
+		print_r("null");
+	}
+	else 
+	{
+		print_r($metadataFile->filterMetadata($filters));
 	}
 }
-if (count($filters) == 0)
-{
-	$filters = null;
-}
-print_r($metadataFile->filterMetadata($filters));
 
 ?>
