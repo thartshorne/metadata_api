@@ -59,6 +59,7 @@ class metadataFile
 			{
 				$filteredList[$variable["new_name"]] = $variable;
 				print_r(json_encode($variable));
+				print_r("\r\n");
 			}
 		}
 		else
@@ -88,6 +89,7 @@ class metadataFile
 		}
 		foreach ($filteredList as $variable) {
 			print_r(json_encode($variable));
+			print_r("\r\n");
 		}
 		if (empty($filteredList))
 		{

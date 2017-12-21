@@ -69,17 +69,19 @@ class metadataFile
 		else return "[]";
 	}
 
-	public function filterMetadata($filtersArr)
+	public function filterMetadata($filtersArr=null)
 	{
 		global $metadataArray;
 		$filteredList = array();
 
+		$strResults;
 		if ($filtersArr == null)
 		{
 			foreach ($metadataArray as $variable) 
 			{
 				$filteredList[$variable["new_name"]] = $variable;
-				print_r(json_encode($variable));
+				// $strResults .= json_encode($variable);
+				// print_r(json_encode($variable));
 			}
 		}
 		else
@@ -109,7 +111,8 @@ class metadataFile
 			}
 		}
 		foreach ($filteredList as $variable) {
-			print_r(json_encode($variable));
+			$strResults .= json_encode($variable);
+			// print_r(json_encode($variable));
 		}
 		if (empty($filteredList))
 		{
@@ -117,7 +120,7 @@ class metadataFile
 		}
 		else
 		{
-			return;
+			return $strResults;
 		}
 	}
 
@@ -130,11 +133,13 @@ class metadataFile
 		}
 		else
 		{
-			print_r($searchBody);
+			//print_r($searchBody);
+			// return $searchBody;
 			$newSearch = array();
 			$searchFile = file_get_contents($searchBody);
 			if ($searchFile == false)
 			{
+				echo 'Error: Unable to read input file';
 				return 0;
 			}
 			$linesFile = str_replace("}", "}\n", $searchFile);
@@ -146,17 +151,20 @@ class metadataFile
 			$searchBody = $newSearch;
 		}
 		$searchResult = array();
+		$strResults;
 		foreach ($searchBody as $variable)
 		{
 			if ($query == null)
 			{
-				$allResults = $searchResult[$variable["new_name"]] = $variable;
-				print_r(json_encode($variable));
+				$searchResult[$variable["new_name"]] = $variable;
+				$strResults .= json_encode($variable);
+				// print_r(json_encode($variable));
 			}
 			elseif (strpos($variable[$fieldName], $query) !== false)
 			{
 				$searchResult[$variable["new_name"]] = $variable;
-				print_r(json_encode($variable));
+				$strResults .= json_encode($variable);
+				// print_r(json_encode($variable));
 			}
 		}
 		if (empty($searchResult))
@@ -165,7 +173,7 @@ class metadataFile
 		}
 		else 
 		{
-			return;
+			return $strResults;
 		}
 	}
 

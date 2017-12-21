@@ -79,11 +79,13 @@ class metadataFile
 			{
 				$allResults = $searchResult[$variable["new_name"]] = $variable;
 				print_r(json_encode($variable));
+				print_r("\r\n");
 			}
 			elseif (strpos($variable[$fieldName], $query) !== false)
 			{
 				$searchResult[$variable["new_name"]] = $variable;
 				print_r(json_encode($variable));
+				print_r("\r\n");
 			}
 		}
 		if (empty($searchResult))
