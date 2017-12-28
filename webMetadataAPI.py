@@ -23,7 +23,7 @@ def selectMetadata():
 	if varName is None:
 		return('Error: please enter a varName')
 	fieldName = request.args.get('fieldName', default=None)
-	return app.response_class(metadata.selectMetadata(varName, fieldName), content_type='application/json')
+	return app.response_class(metadata.select(varName, fieldName), content_type='application/json')
 
 @app.route("/filter")
 def filterMetadata():
@@ -32,6 +32,6 @@ def filterMetadata():
 	for query in request.args:
 		filters[query] = request.args.get(query)
 	if filters == {}:
-		return app.response_class(metadata.filterMetadata(), content_type='application/json')
+		return app.response_class(metadata.filter(), content_type='application/json')
 	else:
-		return app.response_class(metadata.filterMetadata(filters), content_type='application/json')
+		return app.response_class(metadata.filter(filters), content_type='application/json')

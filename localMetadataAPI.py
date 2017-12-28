@@ -28,7 +28,7 @@ class Metadata:
 		except IOError:
 			print('Error: Unable to read file')
 
-	def selectMetadata(self, varName, fieldName=None):
+	def select(self, varName, fieldName=None):
 		if fieldName is None:
 			try:
 				fullVar = self.metadataArray[varName]
@@ -42,7 +42,7 @@ class Metadata:
 			return json.dumps(varField)
 		except KeyError: return '[]'
 
-	def filterMetadata(self, filters=None):
+	def filter(self, filters=None):
 		if filters is None:
 			results = []
 			for variable in self.metadataArray:
