@@ -1,4 +1,6 @@
 # from collections import OrderedDict
+# varDict = OrderedDict()
+# orderedVars = collections.orderedDict(varDict)
 import csv
 import sys
 import json
@@ -17,12 +19,10 @@ class Metadata:
 					else:
 						variable = line
 						index = 0
-						# varDict = OrderedDict()
 						varDict = {}
 						for attr in variable:
 							varDict[self.fieldNames[index]] = attr
 							index+=1
-						# orderedVars = collections.orderedDict(varDict)
 						self.metadataArray[varDict['new_name']] = varDict
 					first +=1
 		except IOError:
@@ -42,9 +42,26 @@ class Metadata:
 			return json.dumps(varField)
 		except KeyError: return '[]'
 
+	def filterMetadata(self, filters=None):
+		if filters is None:
+			results = []
+			for variable in self.metadataArray:
+				v = json.dumps(self.metadataArray[variable], ensure_ascii=False)
+				results.append(v)
+			return results
+		for field in filters:
+			if field not in self.fieldNames:
+				return 'Error: Invalid field name(s)'
 
-# m = Metadata()
-# print m.selectMetadata('cd3whenint', 'topic_1')
-# print m.metadataArray['cd3whenint']
-# def helloWorld():
-#     return "Hello World!"
+		filteredList = []
+		for variable in self.metadataArray:
+			switch = 0
+			for field, value in filters.iteritems():
+				if self.metadataArray[variable][field] != value:
+					switch = 1
+			if switch == 0:
+				v = json.dumps(self.metadataArray[variable], ensure_ascii=False)
+				filteredList.append(v)
+		if filteredList == []:
+			return "[]"
+		return filteredList
