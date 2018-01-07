@@ -29,7 +29,7 @@ class Metadata:
 						self.metadataDict[varDict['new_name']] = varDict
 					first +=1
 		except IOError:
-			print('Error: Unable to read file')
+			return 'Error: Unable to read file'
 
 	def select(self, varName, fieldName=None):
 		if fieldName is None:
@@ -88,3 +88,21 @@ class Metadata:
 		if searchResults == []:
 			return "[]"
 		return searchResults
+
+
+
+
+
+
+
+
+# m = Metadata()
+# # filters = {"wave": "1"}
+# # result = m.filter(filters)
+# print m.search("policing")
+# filters = {"wave": "1", "respondent": "f"}
+# print m.filterMetadata(filters)
+# print m.selectMetadata('cd3whenint', 'topic_1')
+# print m.metadataDict['cd3whenint']
+# def helloWorld():
+#     return "Hello World!"
