@@ -69,7 +69,7 @@ class Metadata:
 			return "[]"
 		return filteredList
 
-	def search(self, query, searchBody = None):\
+	def search(self, query, searchBody = None):
 		if searchBody is None:
 			searchBody = self.metadataDict
 		else:
