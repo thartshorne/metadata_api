@@ -36,14 +36,14 @@ class Metadata:
 			try:
 				fullVar = self.metadataDict[varName]
 				return json.dumps(fullVar)
-			except KeyError: return '[]'
+			except KeyError: return '{}'
 
 		if fieldName not in self.fieldNames:
 			return ('Error: Invalid field name')
 		try:
 			varField = self.metadataDict[varName][fieldName]
 			return json.dumps(varField)
-		except KeyError: return '[]'
+		except KeyError: return '{}'
 
 	def filter(self, filters=None):
 		if filters is None:
@@ -66,7 +66,7 @@ class Metadata:
 				v = json.dumps(self.metadataDict[variable], ensure_ascii=False)
 				filteredList.append(v)
 		if filteredList == []:
-			return "[]"
+			return "{}"
 		return filteredList
 
 	def search(self, query, searchBody = None):
@@ -85,7 +85,7 @@ class Metadata:
 				v = json.dumps(searchBody[variable], ensure_ascii=False)
 				searchResults.append(v)
 		if searchResults == []:
-			return "[]"
+			return "{}"
 		return searchResults
 
 
