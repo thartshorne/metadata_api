@@ -1,0 +1,23 @@
+{% extends "ffmetadata.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header"><h2>Fragile Families and Child Wellbeing Study</h2></div>
+            <p class="lead">Metadata API</p>
+            <p>We expose three API endpoints:
+                <ul>
+                    <li><strong>select(varName, fieldName)</strong>: /select?varName=x&fieldName=y</li>
+                    <li><strong>filter(*fieldNames)<strong>: /filter?field1=x&field2=y&field3=z</li>
+                    <li><strong>search(query, fieldName)</strong>: /search?query=x&fieldName=y</li>
+                </ul>
+
+            <p>To download metadata for all variables as a CSV file, click <em>Download metadata</em>.</p>
+            <p>To browse variables online, click <em>Browse online</em>.</p>
+            <p>If you have any comments or ideas for how to improve the metadata or this API, click <em>Feedback</em>.</p>
+            <p>For more information on the Fragile Families and Child Wellbeing Study, click <em>About FFCWS</em>.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
