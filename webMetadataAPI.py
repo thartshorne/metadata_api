@@ -172,7 +172,7 @@ def selectMetadata():
     # Append topics
     topics = Topic.query.filter(Topic.name == varname).group_by(Topic.topic).all()
     umbrellas = Umbrella.query.filter(Umbrella.topic.in_([str(t.topic) for t in topics])).all()
-    var_data["topics"] = [str(u.umbrella) + " -- " + str(u.topic) for u in umbrellas]
+    var_data["topics"] = [{"umbrella": str(u.umbrella), "topic": str(u.topic)} for u in umbrellas]
 
     # Append responses
     responses = Response.query.filter(Response.name == varname).group_by(Response.label).all()
@@ -191,7 +191,13 @@ def selectMetadata():
 
 @application.route("/filter")
 def filterMetadata():
-    pass
+    # Get request data
+    fields = request.args.keys()
+
+    # Construct filter object
+    qobj = Variable.query
+    for field in fields:
+        pass
     # global metadata
     #
     # filters = {}
