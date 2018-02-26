@@ -12,7 +12,7 @@ RUN cd /app; pip install -r requirements.txt
 ADD . /app
 
 # Configure app
-ENV APP_CONFIG=config.cfg
+ENV APP_CONFIG=api.config.cfg
 
 # Run app
 EXPOSE 5000
