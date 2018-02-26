@@ -20,12 +20,6 @@ application.config.from_envvar('APP_CONFIG', silent=True)
 db = SQLAlchemy(application)
 
 
-# Datetime helper
-epoch_base = datetime.datetime.utcfromtimestamp(0)
-def epochalypse_now():
-    return int((datetime.datetime.now() - epoch_base).total_seconds())
-
-
 # Define data models
 class Variable(db.Model):
     __tablename__ = "variable"
@@ -142,16 +136,52 @@ class Group(db.Model):
         return "<Group %r>" % self.group_id
 
 
-## Core API views ##
+## Helper functions ##
 
+# Datetime helper
+epoch_base = datetime.datetime.utcfromtimestamp(0)
+def epochalypse_now():
+    return int((datetime.datetime.now() - epoch_base).total_seconds())
+
+# Throw informative API errors as JSON
 def api_error(code, description):
     error = jsonify({"error code": code, "error_description": description})
     return error
 
+# Deduplicate a list
 def dedupe_varlist(varlist):
     seen = set()
     seen_add = seen.add
     return [x for x in varlist if not (x in seen or seen_add(x))]
+
+# Search database for variable names where field matches value at least partially
+# Secretly, both filter and search use this functionality!
+def search_db(field, value):
+    matches = None
+    if field == "umbrella":
+        # Get all variables in all topics with matching umbrellas
+        topics_found = Umbrella.query.filter((Umbrella.umbrella.like('%%{}%%'.format(value))) | (Umbrella.topic.like('%%{}%%'.format(value)))).all()
+        tlist = [t.topic for t in topics_found]
+        matches = Topic.query.filter(Topic.topic.in_(tlist)).group_by(Topic.topic, Topic.name).all()
+    elif field == "topic":
+        matches = Topic.query.filter(Topic.topic.like('%%{}%%'.format(value))).all()
+    elif field == "responses":
+        matches = Response.query.filter(Response.label.like('%%{}%%'.format(value))).all()
+    else:
+        # Throw out anything else that's not in Variable
+        if field not in Variable.__table__.columns:
+            api_error(400, "Invalid field name.")
+
+        # All other variable metadata is stored with the variables
+        fieldobj = eval("Variable.{}".format(field))
+        matches = Variable.query.filter(fieldobj.like('%%{}%%'.format(value))).all()
+
+    # Return variable names found, deduplicated
+    distinct = dedupe_varlist([m.name for m in matches])
+    return distinct
+
+
+## Core API views ##
 
 @application.route("/select")
 def selectMetadata():
@@ -194,19 +224,23 @@ def filterMetadata():
     # Get request data
     fields = request.args.keys()
 
+    # Error out if no fields provided
+    if not fields:
+        return api_error(400, "Fields to search not provided.")
+
     # Construct filter object
-    qobj = Variable.query
+    found = []
     for field in fields:
-        pass
-    # global metadata
-    #
-    # filters = {}
-    # for query in request.args:
-    #     filters[query] = request.args.get(query).decode('utf-8')
-    # if filters == {}:
-    #     return app.response_class(metadata.filter(), content_type='application/json')
-    # else:
-    #     return app.response_class(metadata.filter(filters), content_type='application/json')
+        for value in request.args.getlist(field):
+            found.extend(search_db(field, value))
+
+    # Return list of matches
+    if not found:
+        return jsonify({"matches": []})
+    else:
+        varlist = dedupe_varlist(found)
+        return jsonify({"matches": varlist})
+
 
 @application.route("/search")
 def searchMetadata():
@@ -221,16 +255,7 @@ def searchMetadata():
         return api_error(400, "Field name to search not specified.")
 
     # Search by table
-    matches = None
-    if fieldname == "topics":
-        topics_found = Umbrella.query.filter((Umbrella.umbrella.like('%%{}%%'.format(querystr))) | (Umbrella.topic.like('%%{}%%'.format(querystr)))).all()
-        tlist = [t.topic for t in topics_found]
-        matches = Topic.query.filter(Topic.topic.in_(tlist)).group_by(Topic.topic, Topic.name).all()
-    elif fieldname == "responses":
-        matches = Response.query.filter(Response.label.like('%%{}%%'.format(querystr))).all()
-    else:
-        fieldobj = eval("Variable.{}".format(fieldname))
-        matches = Variable.query.filter(fieldobj.like('%%{}%%'.format(querystr))).all()
+    matches = _search_db(fieldname, querystr)
 
     # Yield a list of variable names
     if not matches:
