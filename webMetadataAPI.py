@@ -28,7 +28,7 @@ def epochalypse_now():
 ## Core API views ##
 ## TODO ##
 
-@app.route("/select")
+@application.route("/select")
 def selectMetadata():
     pass
     # global metadata
@@ -39,7 +39,7 @@ def selectMetadata():
     # fieldName = request.args.get('fieldName', default=None)
     # return app.response_class(metadata.select(varName, fieldName), content_type='application/json')
 
-@app.route("/filter")
+@application.route("/filter")
 def filterMetadata():
     pass
     # global metadata
@@ -52,7 +52,7 @@ def filterMetadata():
     # else:
     #     return app.response_class(metadata.filter(filters), content_type='application/json')
 
-@app.route("/search")
+@application.route("/search")
 def searchMetadata():
     pass
     # global metadata
