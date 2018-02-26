@@ -16,4 +16,4 @@ ENV APP_CONFIG=config.cfg
 
 # Run app
 EXPOSE 5000
-CMD ["python", "/app/application.py"]
+CMD ["python", "/app/webMetadataAPI.py"]
