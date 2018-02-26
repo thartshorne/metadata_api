@@ -212,6 +212,9 @@ def selectMetadata():
     if fieldname and fieldname not in var_data.keys():
         return api_error(400, "Invalid field name.")
 
+    # Log query
+    application.logger.info("{}\t{}\tselectMetadata\tname: {}\tfield: {}".format(epochalypse_now(), request.cookies.get("user_id"), varname, str(fieldname)))
+
     # Return only a single field if specified
     if not fieldname:
         return jsonify(var_data)
@@ -233,6 +236,9 @@ def filterMetadata():
     for field in fields:
         for value in request.args.getlist(field):
             found.extend(search_db(field, value))
+
+    # Log query
+    application.logger.info("{}\t{}\tfilterMetadata\tfilters: {}".format(epochalypse_now(), request.cookies.get("user_id"), request.keys.items()))
 
     # Return list of matches
     if not found:
@@ -256,6 +262,9 @@ def searchMetadata():
 
     # Search by table
     matches = _search_db(fieldname, querystr)
+
+    # Log query
+    application.logger.info("{}\t{}\tsearchMetadata\tquery: {}\tfieldname: {}".format(epochalypse_now(), request.cookies.get("user_id"), querystr, fieldname))
 
     # Yield a list of variable names
     if not matches:
@@ -302,7 +311,7 @@ def landing():
 # Execute app directly when invoked
 if __name__ == "__main__":
     # Configure logging (save 10mb of logs in chunks of 1mb)
-    handler = RotatingFileHandler('app.log', maxBytes=1024 * 1024, backupCount=10)
+    handler = RotatingFileHandler('api.log', maxBytes=1024 * 1024, backupCount=10)
     handler.setLevel(logging.INFO)
     application.logger.addHandler(handler)
     application.logger.setLevel(logging.INFO)
