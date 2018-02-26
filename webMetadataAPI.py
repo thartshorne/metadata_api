@@ -10,6 +10,7 @@ import json
 from logging.handlers import RotatingFileHandler
 from flask import Flask, request, render_template, url_for, send_file, send_from_directory, make_response, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 
 # Instantiate Flask app
 application = Flask(__name__)
@@ -147,6 +148,11 @@ def api_error(code, description):
     error = jsonify({"error code": code, "error_description": description})
     return error
 
+def dedupe_varlist(varlist):
+    seen = set()
+    seen_add = seen.add
+    return [x for x in varlist if not (x in seen or seen_add(x))]
+
 @application.route("/select")
 def selectMetadata():
     # Get request data
@@ -198,13 +204,34 @@ def filterMetadata():
 
 @application.route("/search")
 def searchMetadata():
-    pass
-    # global metadata
-    #
-    # query = request.args.get('query').decode('utf-8')
-    # if query is None:
-    #     return ('Error: please enter a query')
-    # return app.response_class(metadata.search(query), content_type='application/json')
+    # Get request data
+    querystr = request.args.get("query").decode('utf-8')
+    fieldname = request.args.get('fieldName', default=None)
+
+    # Error out if query or field not provided
+    if not querystr:
+        return api_error(400, "Query string not specified.")
+    if not fieldname:
+        return api_error(400, "Field name to search not specified.")
+
+    # Search by table
+    matches = None
+    if fieldname == "topics":
+        topics_found = Umbrella.query.filter((Umbrella.umbrella.like('%%{}%%'.format(querystr))) | (Umbrella.topic.like('%%{}%%'.format(querystr)))).all()
+        tlist = [t.topic for t in topics_found]
+        matches = Topic.query.filter(Topic.topic.in_(tlist)).group_by(Topic.topic, Topic.name).all()
+    elif fieldname == "responses":
+        matches = Response.query.filter(Response.label.like('%%{}%%'.format(querystr))).all()
+    else:
+        fieldobj = eval("Variable.{}".format(fieldname))
+        matches = Variable.query.filter(fieldobj.like('%%{}%%'.format(querystr))).all()
+
+    # Yield a list of variable names
+    if not matches:
+        return jsonify({"matches": []})
+    else:
+        varlist = dedupe_varlist([m.name for m in matches])
+        return jsonify({"matches": varlist})
 
 
 ## Static pages ##
