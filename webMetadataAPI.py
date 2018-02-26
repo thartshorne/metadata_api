@@ -219,7 +219,7 @@ def selectMetadata():
     if not fieldname:
         return jsonify(var_data)
     else:
-        result = {varname: var_data[fieldname]}
+        result = {fieldname: var_data[fieldname]}
         return jsonify(result)
 
 @application.route("/filter")

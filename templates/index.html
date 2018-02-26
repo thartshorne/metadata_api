@@ -5,18 +5,41 @@
     <div class="row">
         <div class="col-md-12">
             <div class="page-header"><h2>Fragile Families and Child Wellbeing Study</h2></div>
-            <p class="lead">Metadata API</p>
-            <p>We expose three API endpoints:
-                <ul>
-                    <li><strong>select(varName, fieldName)</strong>: /select?varName=x&fieldName=y</li>
-                    <li><strong>filter(*fieldNames)<strong>: /filter?field1=x&field2=y&field3=z</li>
-                    <li><strong>search(query, fieldName)</strong>: /search?query=x&fieldName=y</li>
-                </ul>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="lead">Metadata API</p>
+                            <p>We provide three API endpoints:
+                                <ul>
+                                    <li><p>
+                                        <code>select(varName, fieldName)</code><br/>
+                                        &emsp;Returns metadata for variable <code>varName</code>.<br/>
+                                        &emsp;(Optionally, returns only the field specified by <code>fieldName</code>.)<br/>
+                                        &emsp;e.g. <code>/select?varName=cm1relf</code>
 
-            <p>To download metadata for all variables as a CSV file, click <em>Download metadata</em>.</p>
-            <p>To browse variables interactively, click <em>Browse online</em>.</p>
-            <p>If you have any comments or ideas for how to improve the metadata or this API, click <em>Feedback</em>.</p>
-            <p>For more information on the Fragile Families and Child Wellbeing Study, click <em>About FFCWS</em>.</p>
+                                    </p></li>
+                                    <li><p>
+                                        <code>filter(*fieldNames)</code><br/>
+                                        &emsp;Return a list of variables where <code>fieldName</code> matches the provided value.<br/>
+                                        &emsp;e.g. <code>/filter?responses=sometimes</code>
+                                    </p></li>
+                                    <li><p>
+                                        <code>search(query, fieldName)</code><br/>
+                                        &emsp;Return a list of variables where <code>query</code> is found in <code>fieldName</code>.<br/>
+                                        &emsp;e.g. <code>/filter?query=age&fieldName=label</code>
+                                    </p></li>
+                                </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="lead">Other utilities for FFCWS data users</p>
+                            <p>To browse variables interactively, click <em>Browse online</em>.</p>
+                            <p>To download metadata for all variables as a CSV file, click <em>Download metadata</em>.</p>
+                            <p>If you have any comments or ideas for how to improve the metadata or this API, click <em>Feedback</em>.</p>
+                            <p>For more information on the Fragile Families and Child Wellbeing Study, click <em>About FFCWS</em>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
