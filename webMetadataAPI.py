@@ -17,7 +17,6 @@ application = Flask(__name__)
 # Configure application
 application.config.from_envvar('APP_CONFIG', silent=True)
 db = SQLAlchemy(application)
-auth = BasicAuth(application)
 
 
 # Datetime helper
