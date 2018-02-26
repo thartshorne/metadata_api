@@ -143,13 +143,24 @@ class Group(db.Model):
 
 ## Core API views ##
 
+def api_error(code, description):
+    error = jsonify({"error code": code, "error_description": description})
+    return error
+
 @application.route("/select")
 def selectMetadata():
-    # Get variable data
+    # Get request data
     varname = request.args.get("varName").decode('utf-8')
+    fieldname = request.args.get('fieldName', default=None)
+
+    # Error out if varname not provided
     if not varname:
-        abort(401)
+        return api_error(400, "Variable name not provided.")
+
+    # Get variable data (abort if not valid)
     var = Variable.query.filter(Variable.name == varname).first()
+    if not var:
+        return api_error(400, "Invalid variable name.")
     var_data = var.serialize
 
     # Append topics
@@ -161,13 +172,15 @@ def selectMetadata():
     responses = Response.query.filter(Response.name == varname).group_by(Response.label).all()
     var_data["responses"] = {value: label for (value, label) in [(r.value, r.label) for r in responses]}
 
+    # Error out if field name not valid
+    if fieldname and fieldname not in var_data.keys():
+        return api_error(400, "Invalid field name.")
+
     # Return only a single field if specified
-    fieldName = request.args.get('fieldName', default=None)
-    print fieldName
-    if not fieldName:
+    if not fieldname:
         return jsonify(var_data)
     else:
-        result = {varname: var_data[fieldName]}
+        result = {varname: var_data[fieldname]}
         return jsonify(result)
 
 @application.route("/filter")
