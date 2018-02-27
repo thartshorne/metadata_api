@@ -1,0 +1,130 @@
+body {
+  font-family: 'Lato';
+  font-size: 10pt;
+}
+.border {
+  border-style: dashed;
+  border-width: thin;
+  border-color: lightgray;
+  border-radius: 4px;
+}
+.headings {
+  text-align: left;
+  font-weight: bold;
+}
+.post {
+  width: 66%;
+  margin: auto;
+  padding: 10px;
+  height: auto;
+  border-style: dashed;
+  border-width: thin;
+  border-color: lightgray;
+  border-radius: 4px;
+  background-color: ghostwhite;
+}
+.staffpost {
+  background-color: #fce8e8;
+}
+.commentbox {
+  width: 66px;
+  margin: auto;
+  padding: 5px;
+  height: auto;
+  border-style: dashed;
+  border-width: thin;
+  border-color: lightgray;
+  border-radius: 4px;
+  background-color: ghostwhite;
+}
+.annotatethread {
+  margin-left: 5%;
+}
+.mainblock {
+  margin-left: 5%;
+  margin-right: 5%;
+}
+.task {
+  margin: auto;
+  width: 66%;
+  height: auto;
+  padding: 1%;
+}
+h2 {
+  text-align: center;
+  text-align: left;
+  font-weight: bold;
+}
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-align: left;
+  font-weight: bold;
+}
+.user {
+  font-size: 16px;
+  font-weight: bold;
+}
+ul {
+  padding-left: 1%;
+  list-style-type: none;
+}
+li[indent="1"] {
+  margin-left: 1%;
+}
+li[indent="2"] {
+  margin-left: 2%;
+}
+li[indent="3"] {
+  margin-left: 3%;
+}
+li[indent="4"] {
+  margin-left: 4%;
+}
+input[type=submit] {
+  font-family: 'Lato';
+  font-size: 8pt;
+}
+select {
+  font-family: 'Lato';
+  font-size: 8pt;
+}
+a .topnav {
+  margin-left: 5%;
+}
+.navbar {
+  margin-right: 10%;
+  margin-left: 10%;
+}
+h1 {
+  text-align: center;
+  font-family: 'Comfortaa', cursive;
+  font-size: 20pt;
+  font-weight: bold;
+  margin: 1em 0em 1em 0em;
+}
+h1 a {
+  text-decoration: none;
+  color: black;
+}
+textarea {
+  width: 200px;
+  height: 100px;
+}
+.alert {
+  width: 25%;
+  margin: auto;
+}
+.alert li {
+  font-size: 8pt;
+}
+.umbrella {
+  border: 1px solid black;
+  padding: 5px;
+}
+.label-metadata{
+  font-weight: bold;
+  font-size: 16px;
+}
