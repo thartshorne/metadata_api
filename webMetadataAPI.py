@@ -238,7 +238,7 @@ def filterMetadata():
             found.extend(search_db(field, value))
 
     # Log query
-    application.logger.info("{}\t{}\tfilterMetadata\tfilters: {}".format(epochalypse_now(), request.cookies.get("user_id"), request.keys.items()))
+    application.logger.info("{}\t{}\tfilterMetadata\tfilters: {}".format(epochalypse_now(), request.cookies.get("user_id"), request.args.items()))
 
     # Return list of matches
     if not found:
@@ -261,7 +261,7 @@ def searchMetadata():
         return api_error(400, "Field name to search not specified.")
 
     # Search by table
-    matches = _search_db(fieldname, querystr)
+    matches = search_db(fieldname, querystr)
 
     # Log query
     application.logger.info("{}\t{}\tsearchMetadata\tquery: {}\tfieldname: {}".format(epochalypse_now(), request.cookies.get("user_id"), querystr, fieldname))
@@ -270,8 +270,7 @@ def searchMetadata():
     if not matches:
         return jsonify({"matches": []})
     else:
-        varlist = dedupe_varlist([m.name for m in matches])
-        return jsonify({"matches": varlist})
+        return jsonify({"matches": matches})
 
 
 ## Static pages ##
