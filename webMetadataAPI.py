@@ -185,6 +185,12 @@ def search_db(field, value):
 
 @application.route("/select")
 def selectMetadata():
+    # Set cookie data if not found
+    if not request.cookies.get("user_id"):
+        expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+        g_uuid = str(uuid.uuid4())
+        resp.set_cookie("user_id", g_uuid, expires=expire_date)
+
     # Get request data
     varname = request.args.get("varName").decode('utf-8')
     fieldname = request.args.get('fieldName', default=None)
@@ -224,6 +230,12 @@ def selectMetadata():
 
 @application.route("/filter")
 def filterMetadata():
+    # Set cookie data if not found
+    if not request.cookies.get("user_id"):
+        expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+        g_uuid = str(uuid.uuid4())
+        resp.set_cookie("user_id", g_uuid, expires=expire_date)
+
     # Get request data
     fields = request.args.keys()
 
@@ -250,6 +262,12 @@ def filterMetadata():
 
 @application.route("/search")
 def searchMetadata():
+    # Set cookie data if not found
+    if not request.cookies.get("user_id"):
+        expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+        g_uuid = str(uuid.uuid4())
+        resp.set_cookie("user_id", g_uuid, expires=expire_date)
+
     # Get request data
     querystr = request.args.get("query").decode('utf-8')
     fieldname = request.args.get('fieldName', default=None)
