@@ -223,10 +223,20 @@ def selectMetadata():
 
     # Return only a single field if specified
     if not fieldname:
-        return jsonify(var_data)
+        rv = jsonify(var_data)
     else:
         result = {fieldname: var_data[fieldname]}
-        return jsonify(result)
+        rv = jsonify(result)
+
+    resp = make_response(rv)
+
+    # Set cookie data if not found
+    if not request.cookies.get("user_id"):
+        expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+        g_uuid = str(uuid.uuid4())
+        resp.set_cookie("user_id", g_uuid, expires=expire_date)
+
+    return resp
 
 @application.route("/filter")
 def filterMetadata():
@@ -254,20 +264,24 @@ def filterMetadata():
 
     # Return list of matches
     if not found:
-        return jsonify({"matches": []})
+        rv = jsonify({"matches": []})
     else:
         varlist = dedupe_varlist(found)
-        return jsonify({"matches": varlist})
+        rv = jsonify({"matches": varlist})
 
+    resp = make_response(rv)
 
-@application.route("/search")
-def searchMetadata():
     # Set cookie data if not found
     if not request.cookies.get("user_id"):
         expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
         g_uuid = str(uuid.uuid4())
         resp.set_cookie("user_id", g_uuid, expires=expire_date)
 
+    return resp
+
+
+@application.route("/search")
+def searchMetadata():
     # Get request data
     querystr = request.args.get("query").decode('utf-8')
     fieldname = request.args.get('fieldName', default=None)
@@ -286,9 +300,19 @@ def searchMetadata():
 
     # Yield a list of variable names
     if not matches:
-        return jsonify({"matches": []})
+        rv = jsonify({"matches": []})
     else:
-        return jsonify({"matches": matches})
+        rv = jsonify({"matches": matches})
+
+    resp = make_response(rv)
+
+    # Set cookie data if not found
+    if not request.cookies.get("user_id"):
+        expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+        g_uuid = str(uuid.uuid4())
+        resp.set_cookie("user_id", g_uuid, expires=expire_date)
+
+    return resp
 
 
 ## Static pages ##
