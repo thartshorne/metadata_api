@@ -217,10 +217,20 @@ def selectMetadata():
 
     # Return only a single field if specified
     if not fieldname:
-        return jsonify(var_data)
+        rv = jsonify(var_data)
     else:
         result = {fieldname: var_data[fieldname]}
-        return jsonify(result)
+        rv = jsonify(result)
+
+    resp = make_response(rv)
+
+    # Set cookie data if not found
+    if not request.cookies.get("user_id"):
+        expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+        g_uuid = str(uuid.uuid4())
+        resp.set_cookie("user_id", g_uuid, expires=expire_date)
+
+    return resp
 
 @application.route("/filter")
 def filterMetadata():
@@ -238,14 +248,24 @@ def filterMetadata():
             found.extend(search_db(field, value))
 
     # Log query
-    application.logger.info("{}\t{}\tfilterMetadata\tfilters: {}".format(epochalypse_now(), request.cookies.get("user_id"), request.keys.items()))
+    application.logger.info("{}\t{}\tfilterMetadata\tfilters: {}".format(epochalypse_now(), request.cookies.get("user_id"), request.args.items()))
 
     # Return list of matches
     if not found:
-        return jsonify({"matches": []})
+        rv = jsonify({"matches": []})
     else:
         varlist = dedupe_varlist(found)
-        return jsonify({"matches": varlist})
+        rv = jsonify({"matches": varlist})
+
+    resp = make_response(rv)
+
+    # Set cookie data if not found
+    if not request.cookies.get("user_id"):
+        expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+        g_uuid = str(uuid.uuid4())
+        resp.set_cookie("user_id", g_uuid, expires=expire_date)
+
+    return resp
 
 
 @application.route("/search")
@@ -261,17 +281,26 @@ def searchMetadata():
         return api_error(400, "Field name to search not specified.")
 
     # Search by table
-    matches = _search_db(fieldname, querystr)
+    matches = search_db(fieldname, querystr)
 
     # Log query
     application.logger.info("{}\t{}\tsearchMetadata\tquery: {}\tfieldname: {}".format(epochalypse_now(), request.cookies.get("user_id"), querystr, fieldname))
 
     # Yield a list of variable names
     if not matches:
-        return jsonify({"matches": []})
+        rv = jsonify({"matches": []})
     else:
-        varlist = dedupe_varlist([m.name for m in matches])
-        return jsonify({"matches": varlist})
+        rv = jsonify({"matches": matches})
+
+    resp = make_response(rv)
+
+    # Set cookie data if not found
+    if not request.cookies.get("user_id"):
+        expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+        g_uuid = str(uuid.uuid4())
+        resp.set_cookie("user_id", g_uuid, expires=expire_date)
+
+    return resp
 
 
 ## Static pages ##
@@ -285,6 +314,8 @@ def favicon():
 # Full metadata file download
 @application.route('/get_metadata')
 def metadata():
+    # Log query
+    application.logger.info("{}\t{}\tfull-file-download".format(epochalypse_now(), request.cookies.get("user_id")))
     return send_file(application.config["METADATA_FILE"], as_attachment=True),
 
 # Feedback page
@@ -303,6 +334,9 @@ def landing():
         expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
         g_uuid = str(uuid.uuid4())
         resp.set_cookie("user_id", g_uuid, expires=expire_date)
+
+    # Log query
+    application.logger.info("{}\t{}\thome".format(epochalypse_now(), request.cookies.get("user_id")))
 
     # Render index page
     return resp
