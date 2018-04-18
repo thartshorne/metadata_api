@@ -12,12 +12,12 @@ FFMetadata20171101.csv is the unmodified metadata CSV file
 
 FFMetadata20171101_tab.txt is a tab separated version of the metadata file and is the recommended file for further work
 
-##We provide three API endpoints:
+## We provide three API endpoints:
 
-###Select
+### Select
 `select(varName, fieldName)`
 
-####Returns metadata for variable varName.
+#### Returns metadata for variable varName.
 (Optionally, returns only the field specified by fieldName.)
 
 e.g. /select?varName=m1a3
@@ -68,9 +68,9 @@ returns:
   "label": "Have you picked up a (name/names) for the (baby/babies) yet?"
 }
 
-###Filter
+### Filter
 `filter(*fieldNames)`
-####Return a list of variables where fieldName matches the provided value.
+#### Return a list of variables where fieldName matches the provided value.
 e.g.  /filter?topic=education
 
 returns 
@@ -96,9 +96,9 @@ returns
 		.
 		.
 
-###Search
+### Search
 `search(query, fieldName)`
-####Return a list of variables where query is found in fieldName.
+#### Return a list of variables where query is found in fieldName.
 e.g.  /search?query=CPS&fieldName=label
 
 returns 
@@ -143,9 +143,9 @@ returns
 }
 
 
-##Errors
+## Errors
 
-###Searching for a variable name that doesn't exist:
+### Searching for a variable name that doesn't exist:
 
 e.g. /select?varName=m1a2
 
@@ -156,7 +156,7 @@ returns:
   "error_description": "Invalid variable name."
 }
 
-###Searching in a field that doesn't exist
+### Searching in a field that doesn't exist
 
 e.g /search?query=car&fieldName=topic3
 
