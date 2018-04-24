@@ -8,3 +8,4 @@ MySQL-python==1.2.5
 SQLAlchemy==1.2.4
 Werkzeug==0.14.1
 pytest==3.5.0
+pandas==0.22.0
