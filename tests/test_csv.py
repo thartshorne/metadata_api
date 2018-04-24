@@ -1,10 +1,23 @@
+import os.path
 import pandas as pd
 from unittest import TestCase
 
+# Path to the csv file we're writing tests for. This indirect way of getting
+# to it is needed so that we can initiate the tests both from within this folder
+# as well as from outside it (e.g. for Travis Integration)
+CSV_PATH = os.path.join(os.path.dirname(__file__), '..', 'FFMetadata20171101.csv')
+
 
 class CsvTestCase(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # Since creating the DataFrame is a semi-expensive operation,
+        # we do that as a class method and avoid doing it as part of setUp
+        cls.df = pd.read_csv(CSV_PATH, encoding="cp1252")
+
     def setUp(self):
-        self.df = pd.read_csv("../FFMetadata20171101.csv", encoding="cp1252")
+        pass
 
     def tearDown(self):
         pass
