@@ -2,10 +2,10 @@
 # varDict = OrderedDict()
 # orderedVars = collections.orderedDict(varDict)
 import csv
-import sys
+#import sys
 
-reload(sys)
-sys.setdefaultencoding('latin1')
+#reload(sys)
+#sys.setdefaultencoding('latin1')
 import json
 class Metadata:
     def __init__(self, filename=None):

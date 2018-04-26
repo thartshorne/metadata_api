@@ -186,7 +186,7 @@ def search_db(field, value):
 @application.route("/select")
 def selectMetadata():
     # Get request data
-    varname = request.args.get("varName").decode('utf-8')
+    varname = request.args.get("varName")
     fieldname = request.args.get('fieldName', default=None)
 
     # Error out if varname not provided
@@ -271,7 +271,7 @@ def filterMetadata():
 @application.route("/search")
 def searchMetadata():
     # Get request data
-    querystr = request.args.get("query").decode('utf-8')
+    querystr = request.args.get("query")
     fieldname = request.args.get('fieldName', default=None)
 
     # Error out if query or field not provided
