@@ -16,7 +16,7 @@ from sqlalchemy import or_
 application = Flask(__name__)
 
 # Configure application
-application.config.from_envvar('APP_CONFIG', silent=True)
+application.config.from_pyfile('api.config.cfg')
 db = SQLAlchemy(application)
 
 
