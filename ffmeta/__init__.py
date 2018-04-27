@@ -1,9 +1,15 @@
-from flask import Flask
+from flask import Flask, jsonify
 
 from ffmeta import settings
+from ffmeta.utils import AppException
 
 
 def create_app(debug=False):
+
+    def handle_error(error):
+        response = jsonify(error.to_dict())
+        response.status_code = error.status_code
+        return response
 
     app = Flask('ffmeta')
     app.config.from_pyfile('settings.py')
@@ -15,6 +21,7 @@ def create_app(debug=False):
     import ffmeta.blueprints.api
 
     app.register_blueprint(ffmeta.blueprints.api.bp, url_prefix='/')
+    app.register_error_handler(AppException, handle_error)
     app.teardown_appcontext_funcs = (shutdown_session, )
     return app
 
