@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>FFCWS Metadata | {% block title %}{% endblock %}</title>
+
+        <!-- Styling -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}?1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='open-iconic.min.css') }}?1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='ff_metadata.css') }}?5">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato|Comfortaa">
+
+        <!-- Scripts -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115020886-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-115020886-1');
+        </script>
+    </head>
+
+    <body>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <img src="{{ url_for('static', filename='ffcws_banner.jpg') }}" class="img-responsive center-block" width="80%">
+                </div>
+                <div class="col-md-12">
+                    <nav class="navbar navbar-default">
+                      <div class="container-fluid">
+                        <ul class="nav navbar-nav">
+                            <a href="{{ url_for('api.landing') }}" class="center-block"><span class="navbar-brand"><span class="oi" data-glyph="code"></span>  FFCWS Metadata API</span></a>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li role="presentation"><a href="http://browse.fragilefamiliesmetadata.org/"><span class="oi" data-glyph="list-rich"></span>  Browse online</a></li>
+                            <li role="presentation"><a href="{{ url_for('api.metadata') }}"><span class="oi" data-glyph="data-transfer-download"></span>  Download metadata</a></li>
+                            <li role="presentation"><a href="{{ url_for('api.feedback') }}"><span class="oi" data-glyph="chat"></span>  Feedback</a></li>
+                            <li role="presentation"><a href="http://fragilefamilies.princeton.edu/"><span class="oi" data-glyph="globe"></span>  About FFCWS</a></li>
+                        </ul>
+                      </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="mainblock">
+            {% block body %}{% endblock %}
+        </div>
+
+    </body>
+
+    <footer>
+            {% block foot %}{% endblock %}
+    </footer>
+
+</html>
