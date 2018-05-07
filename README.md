@@ -74,7 +74,7 @@ returns:
 e.g.  /filter?topic=education
 
 returns 
-
+```
 {
   "matches": [
     "cf1edu", 
@@ -95,14 +95,14 @@ returns
 		.
 		.
 		.
-
+```
 ### Search
 `search(query, fieldName)`
 #### Return a list of variables where query is found in fieldName.
 e.g.  /search?query=CPS&fieldName=label
 
 returns 
-
+```
 {
   "matches": [
     "p4j2", 
@@ -141,7 +141,7 @@ returns
     "p6j64_4"
   ]
 }
-
+```
 
 ## Errors
 
@@ -150,15 +150,21 @@ returns
 e.g. /select?varName=m1a2
 
 returns:
-
+```
 {
   "error code": 400, 
   "error_description": "Invalid variable name."
 }
-
+```
 ### Searching in a field that doesn't exist
 
 e.g /search?query=car&fieldName=topic3
 
-returns "Internal Server Error"
+returns:
+```
+{
+  "error code": 400, 
+  "error_description": "Invalid field name."
+}
+```
 

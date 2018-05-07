@@ -2,10 +2,12 @@ import os.path
 import pandas as pd
 from unittest import TestCase
 
+import ffmeta
+
 # Path to the csv file we're writing tests for. This indirect way of getting
 # to it is needed so that we can initiate the tests both from within this folder
 # as well as from outside it (e.g. for Travis Integration)
-CSV_PATH = os.path.join(os.path.dirname(__file__), '..', 'FFMetadata20171101.csv')
+CSV_PATH = os.path.join(os.path.dirname(ffmeta.__file__), 'data', 'FFMetadata20171101.csv')
 
 
 class CsvTestCase(TestCase):
