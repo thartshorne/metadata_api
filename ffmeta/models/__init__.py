@@ -1,5 +1,7 @@
+from sqlalchemy import Column, Integer, Text, String, ForeignKey
+from sqlalchemy.orm import relationship
+
 from ffmeta.models.db import Base
-from sqlalchemy import Column, Integer, Text
 
 
 class Variable(Base):
@@ -20,6 +22,9 @@ class Variable(Base):
     scope = Column(Text)
     section = Column(Text)
     leaf = Column(Text)
+
+    responses = relationship('Response', backref='variable')
+    topics = relationship('Topic', backref='variable')
 
     def __init__(self, name, label, old_name, data_type, warning, group_id, group_subid, data_source, respondent, wave, scope, section, leaf):
         self.name = name
@@ -63,8 +68,10 @@ class Topic(Base):
     __tablename__ = "topic"
 
     id = Column(Integer, primary_key=True)
-    name = Column(Text)
+    name = Column(Text, ForeignKey("variable.name"))
     topic = Column(Text)
+
+    umbrella = relationship('Umbrella', backref='topic_obj', uselist=False)
 
     def __init__(self, name, topic):
         self.name = name
@@ -73,12 +80,15 @@ class Topic(Base):
     def __repr__(self):
         return "<Topic %r>" % self.topic
 
+    def __str__(self):
+        return self.topic
+
 
 class Umbrella(Base):
     __tablename__ = "umbrella"
 
     id = Column(Integer, primary_key=True)
-    topic = Column(Text)
+    topic = Column(Text, ForeignKey("topic.topic"))
     umbrella = Column(Text)
 
     def __init__(self, topic, umbrella):
@@ -86,14 +96,17 @@ class Umbrella(Base):
         self.umbrella = umbrella
 
     def __repr__(self):
-        return "<Umbrella %r>" % self.umbrela
+        return "<Umbrella %r>" % self.umbrella
+
+    def __str__(self):
+        return self.umbrella
 
 
 class Response(Base):
     __tablename__ = "response"
 
     id = Column(Integer, primary_key=True)
-    name = Column(Text)
+    name = Column(Text, ForeignKey("variable.name"))
     label = Column(Text)
     value = Column(Integer)
 
