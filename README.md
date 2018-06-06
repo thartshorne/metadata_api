@@ -2,15 +2,9 @@
 
 [![Build Status](https://travis-ci.org/fragilefamilieschallenge/metadata_api.svg?branch=master)](https://travis-ci.org/fragilefamilieschallenge/metadata_api)
 
+This is a Python Flask app that provides access to the Fragile Families Metadata through HTTP endpoints that return JSON results. The web endpoints allow web users to query, select and filter the metadata variables in several ways.
 
-localMetadataAPI.py is a local library that contains all logic to select, filter, and search the metadata within a python project.
-
-webMetadataAPI.py is a python flask app that allows server requests to be passed to the local API to provide select, filter, and search functions from the web.
-
-FFMetadata20171101.csv is the unmodified metadata CSV file
-	-CSV version is not recommended because the file text contains commas which creates conflict
-
-FFMetadata20171101_tab.txt is a tab separated version of the metadata file and is the recommended file for further work
+Access to the 'raw' metadata CSV file is also provided. The latest CSV files are available in the 'data' folder of the ffmeta package.
 
 ## We provide three API endpoints:
 
