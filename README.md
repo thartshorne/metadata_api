@@ -9,63 +9,72 @@ Access to the 'raw' metadata CSV file is also provided. The latest CSV files are
 ## We provide three API endpoints:
 
 ### Select
-`select(varName, fieldName)`
 
 #### Returns metadata for variable varName.
-(Optionally, returns only the field specified by fieldName.)
+`/select?varName=<varName>`
 
-e.g. /select?varName=m1a3
+For example,
+`/select?varName=m1a3`
 
 returns: 
+```
 {
-  "data_source": "questionnaire", 
-  "data_type": "bin", 
-  "group_id": "221", 
-  "group_subid": null, 
-  "id": 449, 
-  "label": "Have you picked up a (name/names) for the (baby/babies) yet?", 
-  "leaf": "3", 
-  "name": "m1a3", 
-  "old_name": "m1a3", 
-  "respondent": "m", 
-  "responses": {
-    "-9": "Not in wave", 
-    "-8": "Out of range", 
-    "-7": "N/A", 
-    "-6": "Skip", 
-    "-5": "Not asked", 
-    "-4": "Multiple ans", 
-    "-3": "Missing", 
-    "-2": "Don't know", 
-    "-1": "Refuse", 
-    "1": "Yes", 
-    "2": "No"
-  }, 
-  "scope": "20", 
-  "section": "a", 
-  "topics": [
-    {
-      "topic": "parenting abilities", 
-      "umbrella": "Parenting"
-    }
-  ], 
-  "warning": 0, 
-  "wave": "1"
+    "data_source": "questionnaire",
+    "data_type": "bin",
+    "group_id": "221",
+    "group_subid": null,
+    "id": 449,
+    "label": "Have you picked up a (name/names) for the (baby/babies) yet?",
+    "leaf": "3",
+    "name": "m1a3",
+    "old_name": "m1a3",
+    "respondent": "m",
+    "responses": {
+        "1": "Yes",
+        "2": "No",
+        "-9": "Not in wave",
+        "-8": "Out of range",
+        "-7": "N/A",
+        "-6": "Skip",
+        "-5": "Not asked",
+        "-4": "Multiple ans",
+        "-3": "Missing",
+        "-2": "Don't know",
+        "-1": "Refuse"
+    },
+    "scope": "20",
+    "section": "a",
+    "topics": [
+        {
+            "topic": "parenting abilities",
+            "umbrella": "Parenting"
+        }
+    ],
+    "warning": 0,
+    "wave": "1"
 }
+```
 
-while 
-e.g. /select?varName=m1a3&fieldName=label
+#### Optionally, it can return only the field specified by \<fieldName\>.
+`/select?varName=<varName>&fieldName=<fieldName>`
+
+For example,
+`/select?varName=m1a3&fieldName=label`
 
 returns:
-
+```
 {
   "label": "Have you picked up a (name/names) for the (baby/babies) yet?"
 }
+```
 
 ### Filter
-`filter(*fieldNames)`
+
 #### Return a list of variables where fieldName matches the provided value.
-e.g.  /filter?topic=education
+`/filter?<fieldName>=<value>`
+
+For example,
+`/filter?topic=education`
 
 returns 
 ```
@@ -91,9 +100,12 @@ returns
 		.
 ```
 ### Search
-`search(query, fieldName)`
-#### Return a list of variables where query is found in fieldName.
-e.g.  /search?query=CPS&fieldName=label
+
+#### Return a list of variables where \<value\> is found in \<fieldName\>.
+`/search?fieldName=<fieldName>&query=<value>`
+
+For example,
+`/search?fieldName=label&query=CPS`
 
 returns 
 ```
@@ -141,7 +153,7 @@ returns
 
 ### Searching for a variable name that doesn't exist:
 
-e.g. /select?varName=m1a2
+`/select?varName=m1a2`
 
 returns:
 ```
@@ -152,7 +164,7 @@ returns:
 ```
 ### Searching in a field that doesn't exist
 
-e.g /search?query=car&fieldName=topic3
+`/search?query=car&fieldName=topic3`
 
 returns:
 ```
