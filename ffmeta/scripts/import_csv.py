@@ -13,6 +13,13 @@ from ffmeta.models.db import session
 
 def load_csv():
     '''Load metadata to the specified database.'''
+
+    session.execute('DELETE FROM `group`')
+    session.execute('DELETE FROM `umbrella`')
+    session.execute('DELETE FROM `response`')
+    session.execute('DELETE FROM `topic`')
+    session.execute('DELETE FROM `variable`')
+
     with open(os.path.join(os.path.dirname(ffmeta.__file__), current_app.config["METADATA_FILE"])) as t:
         rows = list(DictReader(t))
         vars_loaded = 0
