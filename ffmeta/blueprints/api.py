@@ -146,7 +146,7 @@ def favicon():
 def metadata():
     # Log query
     current_app.logger.info("{}\t{}\tfull-file-download".format(epochalypse_now(), request.cookies.get("user_id")))
-    return send_file(current_app.config["METADATA_FILE"], as_attachment=True),
+    return send_file(current_app.config["METADATA_FILE"], as_attachment=True)
 
 
 # Feedback page
