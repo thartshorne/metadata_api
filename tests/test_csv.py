@@ -129,12 +129,12 @@ class CsvTestCase(TestCase):
         All rows should have either a 0 or 1 for each of the 6 focal person columns
         :return:
         """
-        self.assertEqual(len(self.df[self.df.fp_child.notnull()][~self.df.fp_child.between(0, 1)]), 0)
-        self.assertEqual(len(self.df[self.df.fp_child.notnull()][~self.df.fp_mother.between(0, 1)]), 0)
-        self.assertEqual(len(self.df[self.df.fp_child.notnull()][~self.df.fp_father.between(0, 1)]), 0)
-        self.assertEqual(len(self.df[self.df.fp_child.notnull()][~self.df.fp_PCG.between(0, 1)]), 0)
-        self.assertEqual(len(self.df[self.df.fp_child.notnull()][~self.df.fp_partner.between(0, 1)]), 0)
-        self.assertEqual(len(self.df[self.df.fp_child.notnull()][~self.df.fp_other.between(0, 1)]), 0)
+        self.assertEqual(len(self.df[self.df.fp_fchild.notnull()][~self.df.fp_fchild.between(0, 1)]), 0)
+        self.assertEqual(len(self.df[self.df.fp_mother.notnull()][~self.df.fp_mother.between(0, 1)]), 0)
+        self.assertEqual(len(self.df[self.df.fp_father.notnull()][~self.df.fp_father.between(0, 1)]), 0)
+        self.assertEqual(len(self.df[self.df.fp_PCG.notnull()][~self.df.fp_PCG.between(0, 1)]), 0)
+        self.assertEqual(len(self.df[self.df.fp_partner.notnull()][~self.df.fp_partner.between(0, 1)]), 0)
+        self.assertEqual(len(self.df[self.df.fp_other.notnull()][~self.df.fp_other.between(0, 1)]), 0)
 
     def _testRespondent(self):
         """
